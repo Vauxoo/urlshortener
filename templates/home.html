@@ -27,6 +27,15 @@
                      <h4><span class="glyphicon glyphicon-link"></span> Shortened URL:</h4> <a class="alert-link" href="{{short_url}}"  target="_blank"> {{short_url}}</a>
                   </div>
                {% endif %}
+               {% if error %}
+                  <div class='alert alert-danger'>
+                     An error has occurred!
+                  </div>
+               {% endif %}
+               {% if number_of_rows %}
+                   <div style="color:gray; text-align: center;">
+                     <large style="font-weight: bold; font-size: 20px">{{number_of_rows}}</large> links shortened</div>
+               {% endif %}
                   </div>
                </div>
             </div>

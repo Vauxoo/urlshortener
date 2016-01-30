@@ -81,56 +81,65 @@ def table_check():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     method = request.method
-    if (method == 'GET' and request.args.get('url', None)) or \
-       method == 'POST':
-        original_url = request.args.get('url') if \
-            method == 'GET' else request.form.get('url')
-        if urlparse(original_url).scheme == '':
-            original_url = 'http://' + original_url
+    with sqlite3.connect('urls.db') as conn:
+        try:
+            cursor = conn.cursor()
+            rows_query = """
+                SELECT Count() FROM WEB_URL"""
+            result_cursor = cursor.execute(rows_query)
+            number_of_rows = result_cursor.fetchone()[0]
+            if (method == 'GET' and request.args.get('url', None)) or \
+               method == 'POST':
+                original_url = request.args.get('url') if \
+                    method == 'GET' else request.form.get('url')
+                if original_url:
+                    if urlparse(original_url).scheme == '':
+                        original_url = 'http://' + original_url
+                    exist_row = """
+                        SELECT NUM FROM WEB_URL
+                            WHERE URL='{url}'
+                        """.format(url=original_url)
+                    result_cursor = cursor.execute(exist_row)
+                    result_fetch = result_cursor.fetchone()
+                    if result_fetch:
+                        new_num = result_fetch[0]
+                    else:
+                        last_row = """
+                            SELECT NUM, max(ID) FROM WEB_URL
+                            """
+                        result_cursor = cursor.execute(last_row)
+                        last_id = result_cursor.fetchone()[0]
+                        new_num = next_id(last_id)
+                        insert_row = """
+                            INSERT INTO WEB_URL (URL, NUM)
+                                VALUES ('{url}', '{num}')
+                            """.format(url=original_url, num=new_num)
+                        cursor.execute(insert_row)
+                        number_of_rows += 1
 
-        with sqlite3.connect('urls.db') as conn:
-            try:
-                cursor = conn.cursor()
-                exist_row = """
-                    SELECT NUM FROM WEB_URL
-                        WHERE URL='{url}'
-                    """.format(url=original_url)
-                result_cursor = cursor.execute(exist_row)
-                result_fetch = result_cursor.fetchone()
-                if result_fetch:
-                    new_num = result_fetch[0]
-                else:
-                    last_row = """
-                        SELECT NUM, max(ID) FROM WEB_URL
-                        """
-                    result_cursor = cursor.execute(last_row)
-                    last_id = result_cursor.fetchone()[0]
-                    new_num = next_id(last_id)
-                    insert_row = """
-                        INSERT INTO WEB_URL (URL, NUM)
-                            VALUES ('{url}', '{num}')
-                        """.format(url=original_url, num=new_num)
-                    cursor.execute(insert_row)
+                    encoded_string = base64.urlsafe_b64encode(new_num)
+                    if method == 'GET':
+                        return jsonify(**{'short_url': host + encoded_string,
+                                          'code': 'SUCCESS',
+                                          'original_url': original_url})
+                    else:
+                        return render_template(
+                            'home.html', short_url=host + encoded_string,
+                            number_of_rows=number_of_rows)
 
-                encoded_string = base64.urlsafe_b64encode(new_num)
-                if method == 'GET':
-                    return jsonify(**{'short_url': host + encoded_string,
-                                      'code': 'SUCCESS',
-                                      'original_url': original_url})
-                else:
-                    return render_template(
-                        'home.html', short_url=host + encoded_string)
+            return render_template('home.html', number_of_rows=number_of_rows)
+        except Exception as error:
+            if method == 'GET':
+                return jsonify(**{'code': 'ERROR',
+                                  'error': str(error),
+                                  'original_url': original_url
+                                  })
+            else:
+                return render_template(
+                    'home.html',
+                    number_of_rows=number_of_rows,
+                    error=True)
 
-            except Exception as error:
-                if method == 'GET':
-                    return jsonify(**{'code': 'ERROR',
-                                      'error': str(error),
-                                      'original_url': original_url
-                                      })
-                else:
-                    return render_template('home.html')
-
-    return render_template('home.html')
 
 
 @app.route('/<short_url>')

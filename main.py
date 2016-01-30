@@ -28,10 +28,8 @@ def get_base_next(char):
 
     char_index = BASE.index(char)
     char_index += 1
-    if char_index < BASE_LEN:
-        return False, BASE[char_index]
-    else:
-        return True, '0'
+    return (False, BASE[char_index]) if \
+        char_index < BASE_LEN else (True, '0')
 
 
 def next_id(id_=None):
@@ -68,10 +66,14 @@ def table_check():
         URL  TEXT  NOT NULL
         );
         """
+    create_index = """
+        CREATE INDEX NUM_INDEX ON WEB_URL (NUM);
+        """
     with sqlite3.connect('urls.db') as conn:
         cursor = conn.cursor()
         try:
             cursor.execute(create_table)
+            cursor.execute(create_index)
         except OperationalError:
             pass
 

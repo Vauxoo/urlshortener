@@ -6,7 +6,6 @@
          <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
       </head>
       <body>
-         <!-- Main jumbotron for a primary marketing message or call to action -->
          <div>
             <div class="container" style="margin-top: 15%">
                <br />
@@ -15,16 +14,16 @@
                      <form method="post" action="">
                         <div class="form-group">
                            <div class="input-group">
-                              <input type="text" id="url" name="url" class="form-control chat-input" placeholder="Enter URL to shorten." />
+                              <input type="text" id="url" name="url" class="form-control chat-input" placeholder="Enter URL to shorten" />
                               <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary">Go!</button>
+                                <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-link"></span> Clip</button>
                               </span>
                             </div><!-- /input-group -->
                         </div>
                      </form>
                {% if short_url %}
                   <div class='alert alert-info'>
-                     <h4><span class="glyphicon glyphicon-link"></span> Shortened URL:</h4> <a class="alert-link" href="{{short_url}}"  target="_blank"> {{short_url}}</a>
+                     <a class="alert-link" href="{{short_url}}"  target="_blank"> {{short_url}}</a>
                   </div>
                {% endif %}
                {% if error %}

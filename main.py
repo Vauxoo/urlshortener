@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2016 by Ecreall under licence AGPL terms
 # avalaible on http://www.gnu.org/licenses/agpl.html
 #Source: https://github.com/narenaryan/Pyster
@@ -16,6 +17,7 @@ host = 'http://localhost:5000/'
 BASE = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 BASE.extend(list(string.ascii_lowercase))
 BASE.extend(list(string.ascii_uppercase))
+#['é','à','â','ê','é','<','>','+','=','@','_','-','|','#','&','*','!'] 262144000000 items
 BASE_LEN = len(BASE)
 
 #Assuming urls.db is in your app root folder
@@ -62,18 +64,14 @@ def table_check():
     create_table = """
         CREATE TABLE WEB_URL(
         ID INTEGER PRIMARY KEY     AUTOINCREMENT,
-        NUM TEXT NOT NULL,
-        URL  TEXT  NOT NULL
+        NUM TEXT NOT NULL UNIQUE,
+        URL  TEXT  NOT NULL UNIQUE
         );
-        """
-    create_index = """
-        CREATE INDEX NUM_INDEX ON WEB_URL (NUM);
         """
     with sqlite3.connect('urls.db') as conn:
         cursor = conn.cursor()
         try:
             cursor.execute(create_table)
-            cursor.execute(create_index)
         except OperationalError:
             pass
 
@@ -85,9 +83,12 @@ def home():
         try:
             cursor = conn.cursor()
             rows_query = """
-                SELECT Count() FROM WEB_URL"""
+                SELECT NUM, max(ID) FROM WEB_URL"""
             result_cursor = cursor.execute(rows_query)
-            number_of_rows = result_cursor.fetchone()[0]
+            result_fetch = result_cursor.fetchone()
+            last_num = result_fetch[0]
+            number_of_rows = result_fetch[1]
+            number_of_rows = 0 if number_of_rows is None else number_of_rows
             if (method == 'GET' and request.args.get('url', None)) or \
                method == 'POST':
                 original_url = request.args.get('url') if \
@@ -104,12 +105,7 @@ def home():
                     if result_fetch:
                         new_num = result_fetch[0]
                     else:
-                        last_row = """
-                            SELECT NUM, max(ID) FROM WEB_URL
-                            """
-                        result_cursor = cursor.execute(last_row)
-                        last_id = result_cursor.fetchone()[0]
-                        new_num = next_id(last_id)
+                        new_num = next_id(last_num)
                         insert_row = """
                             INSERT INTO WEB_URL (URL, NUM)
                                 VALUES ('{url}', '{num}')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2016 by Ecreall under licence AGPL terms
 # avalaible on http://www.gnu.org/licenses/agpl.html
-#Source: https://github.com/narenaryan/Pyster
+# Source: https://github.com/narenaryan/Pyster
 # licence: AGPL
 # author: Amen Souissi
 
@@ -10,14 +10,13 @@ import base64
 import string
 from flask import Flask, request, render_template, redirect, jsonify
 from sqlite3 import OperationalError
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 host = 'http://localhost:5000/'
 
 BASE = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 BASE.extend(list(string.ascii_lowercase))
 BASE.extend(list(string.ascii_uppercase))
-#['é','à','â','ê','é','<','>','+','=','@','_','-','|','#','&','*','!'] 262144000000 items
 BASE_LEN = len(BASE)
 
 #Assuming urls.db is in your app root folder
@@ -113,7 +112,8 @@ def home():
                         cursor.execute(insert_row)
                         number_of_rows += 1
 
-                    encoded_string = base64.urlsafe_b64encode(new_num)
+                    encoded_string = base64.urlsafe_b64encode(
+                        new_num.encode()).decode()
                     if method == 'GET':
                         return jsonify(**{'short_url': host + encoded_string,
                                           'code': 'SUCCESS',
@@ -137,11 +137,10 @@ def home():
                     error=True)
 
 
-
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
-    decoded_string = base64.urlsafe_b64decode(short_url.encode())
-    redirect_url = host
+    decoded_string = base64.urlsafe_b64decode(
+        short_url.encode()).decode()
     with sqlite3.connect('urls.db') as conn:
         cursor = conn.cursor()
         select_row = """
@@ -150,10 +149,13 @@ def redirect_short_url(short_url):
                 """.format(num=decoded_string)
         result_cursor = cursor.execute(select_row)
         try:
-            redirect_url = result_cursor.fetchone()[0]
-        except Exception as e:
-            print e
-    return redirect(redirect_url)
+            return redirect(result_cursor.fetchone()[0])
+        except Exception:
+            pass
+
+    return render_template(
+        'home.html',
+        error=True)
 
 
 if __name__ == '__main__':

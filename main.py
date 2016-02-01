@@ -9,6 +9,7 @@ import sqlite3
 import base64
 import string
 from flask import Flask, request, render_template, redirect, jsonify
+from flask.ext.cors import CORS, cross_origin
 from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
@@ -21,6 +22,8 @@ BASE_LEN = len(BASE)
 
 #Assuming urls.db is in your app root folder
 app = Flask(__name__)
+
+cors = CORS(app, resources={r"/": {"origins": "*"}})
 
 
 def get_base_next(char):
@@ -76,6 +79,7 @@ def table_check():
 
 
 @app.route('/', methods=['GET', 'POST'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def home():
     method = request.method
     with sqlite3.connect('urls.db') as conn:

@@ -70,7 +70,7 @@ def table_check():
         URL  TEXT  NOT NULL UNIQUE
         );
         """
-    with sqlite3.connect('urls.db') as conn:
+    with sqlite3.connect('var/urls.db') as conn:
         cursor = conn.cursor()
         try:
             cursor.execute(create_table)
@@ -82,7 +82,7 @@ def table_check():
 @cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def home():
     method = request.method
-    with sqlite3.connect('urls.db') as conn:
+    with sqlite3.connect('var/urls.db') as conn:
         try:
             cursor = conn.cursor()
             rows_query = """
@@ -145,7 +145,7 @@ def home():
 def redirect_short_url(short_url):
     decoded_string = base64.urlsafe_b64decode(
         short_url.encode()).decode()
-    with sqlite3.connect('urls.db') as conn:
+    with sqlite3.connect('var/urls.db') as conn:
         cursor = conn.cursor()
         select_row = """
                 SELECT URL FROM WEB_URL

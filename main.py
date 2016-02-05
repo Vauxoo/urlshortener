@@ -79,7 +79,7 @@ def table_check():
 
 
 @app.route('/', methods=['GET', 'POST'])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
 def home():
     method = request.method
     with sqlite3.connect('urls.db') as conn:

@@ -6,7 +6,6 @@
 # author: Amen Souissi
 
 import sqlite3
-import base64
 import string
 from flask import Flask, request, render_template, redirect, jsonify
 from flask.ext.cors import CORS, cross_origin
@@ -30,7 +29,6 @@ cors = CORS(app, resources={r"/": {"origins": "*"}})
 def get_base_next(char):
     if char == '':
         return False, '0'
-
     char_index = BASE.index(char)
     char_index += 1
     return (False, BASE[char_index]) if \
@@ -117,8 +115,7 @@ def home():
                         cursor.execute(insert_row)
                         number_of_rows += 1
 
-                    encoded_string = base64.urlsafe_b64encode(
-                        new_num.encode()).decode()
+                    encoded_string = new_num
                     if method == 'GET':
                         return jsonify(**{'short_url': host + encoded_string,
                                           'code': 'SUCCESS',
@@ -144,8 +141,7 @@ def home():
 
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
-    decoded_string = base64.urlsafe_b64decode(
-        short_url.encode()).decode()
+    decoded_string = short_url
     with sqlite3.connect('var/urls.db') as conn:
         cursor = conn.cursor()
         select_row = """

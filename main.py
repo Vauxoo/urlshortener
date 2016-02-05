@@ -13,7 +13,8 @@ from flask.ext.cors import CORS, cross_origin
 from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
-host = 'http://localhost:5000/'
+#host = 'http://localhost:5000/'
+host = 'http://6li.eu/'
 
 BASE = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 BASE.extend(list(string.ascii_lowercase))
@@ -165,4 +166,5 @@ def redirect_short_url(short_url):
 if __name__ == '__main__':
     # This code checks whether database table is created or not
     table_check()
-    app.run(debug=True)
+#    app.run(debug=True)
+    app.run(host='0.0.0.0')

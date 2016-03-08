@@ -1,4 +1,4 @@
-# Pyster
+# urlshortener
 A URL shortening Flask micro website similar to bit.ly 
 
 To launch the application:

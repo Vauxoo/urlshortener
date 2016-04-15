@@ -8,6 +8,7 @@
 import sqlite3
 import string
 import os
+import click
 from flask import Flask, request, render_template, redirect, jsonify
 from flask.ext.cors import CORS, cross_origin
 from sqlite3 import OperationalError
@@ -161,10 +162,13 @@ def redirect_short_url(short_url):
         error=True)
 
 
-def main():
+@click.option('--debug', help='Enable debug option',
+              is_flag=True)
+@click.command()
+def main(debug):
     # This code checks whether database table is created or not
     table_check()
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=debug)
 
 
 if __name__ == '__main__':

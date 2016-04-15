@@ -4,6 +4,7 @@
 # Source: https://github.com/narenaryan/Pyster
 # licence: AGPL
 # author: Amen Souissi
+# hacked by: Nhomar Hernandez <nhomar@vauxoo.com>
 
 import sqlite3
 import string
@@ -13,6 +14,9 @@ from flask import Flask, request, render_template, redirect, jsonify
 from flask.ext.cors import CORS, cross_origin
 from sqlite3 import OperationalError
 from urllib.parse import urlparse
+
+
+__version__ = '1.0.0'
 
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
@@ -162,10 +166,15 @@ def redirect_short_url(short_url):
         error=True)
 
 
+@click.option('--version', help='Print Version and exit',
+              is_flag=True)
 @click.option('--debug', help='Enable debug option',
               is_flag=True)
 @click.command()
-def main(debug):
+def main(debug, version):
+    if version:
+        click.echo(__version__)
+        exit()
     # This code checks whether database table is created or not
     table_check()
     app.run(host='0.0.0.0', debug=debug)

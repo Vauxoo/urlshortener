@@ -16,7 +16,7 @@ from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
@@ -126,13 +126,16 @@ def home():
                     if method == 'GET':
                         return jsonify(**{'short_url': short_url,
                                           'code': 'SUCCESS',
-                                          'original_url': original_url})
+                                          'original_url': original_url,
+                                          'version': __version__})
                     else:
                         return render_template(
                             'home.html', short_url=short_url,
-                            number_of_rows=number_of_rows)
+                            number_of_rows=number_of_rows,
+                            version=__version__)
 
-            return render_template('home.html', number_of_rows=number_of_rows)
+            return render_template('home.html', number_of_rows=number_of_rows,
+                                   version=__version__)
         except Exception as error:
             if method == 'GET':
                 return jsonify(**{'code': 'ERROR',

@@ -4,6 +4,35 @@
       <head>
          <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
          <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+        html {
+            min-height: 100%;
+            position: relative;
+        }
+        body {
+            margin-bottom: 60px;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            bottom: 0;
+            height: 60px;
+            position: absolute;
+            width: 100%;
+        }
+        body > .container {
+            padding: 60px 15px 0;
+        }
+        .container .text-muted {
+            margin: 20px 0;
+        }
+        .footer > .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        code {
+            font-size: 80%;
+        }
+        </style>
       </head>
       <body>
          <div>
@@ -39,6 +68,14 @@
                </div>
             </div>
          </div>
+         <footer class="footer">
+            <div class="container">
+                <p class="text-muted pull-right">Deployed and maintained by 
+                    <a href="https://www.vauxoo.com">Vauxoo</a>
+                    </p>
+                <p class="text-muted"><b><small>Version: {{version}}</small></b></p>
+            </div>
+         </footer>
          </div> 
       </body>
    </html>

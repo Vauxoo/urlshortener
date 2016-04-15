@@ -16,7 +16,7 @@ from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
 
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')

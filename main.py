@@ -7,20 +7,22 @@
 
 import sqlite3
 import string
+import os
 from flask import Flask, request, render_template, redirect, jsonify
 from flask.ext.cors import CORS, cross_origin
 from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
-#host = 'http://localhost:5000/'
-host = 'http://6li.eu/'
+
+host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
+
 
 BASE = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 BASE.extend(list(string.ascii_lowercase))
 BASE.extend(list(string.ascii_uppercase))
 BASE_LEN = len(BASE)
 
-#Assuming urls.db is in your app root folder
+# Assuming urls.db is in your app root folder
 app = Flask(__name__)
 
 cors = CORS(app, resources={r"/": {"origins": "*"}})
@@ -46,15 +48,15 @@ def next_id(id_=None):
         new_id = new_id[:index] + next
         index -= 1
         len_id = len(new_id)
-        while index+6 >= 0 and final:
-            if index+len_id >= 0:
+        while index + 6 >= 0 and final:
+            if index + len_id >= 0:
                 to_inc = new_id[index]
                 final, next = get_base_next(to_inc)
-                new_id = new_id[:index] + next + new_id[index+1:]
+                new_id = new_id[:index] + next + new_id[index + 1:]
             else:
                 to_inc = ''
                 final, next = get_base_next(to_inc)
-                new_id = next + new_id[index+1:]
+                new_id = next + new_id[index + 1:]
 
             index -= 1
 
@@ -78,7 +80,7 @@ def table_check():
 
 
 @app.route('/', methods=['GET', 'POST'])
-@cross_origin(origin='localhost',headers=['Content-Type','Authorization'])
+@cross_origin(origin='localhost', headers=['Content-Type', 'Authorization'])
 def home():
     method = request.method
     with sqlite3.connect('var/urls.db') as conn:
@@ -114,15 +116,15 @@ def home():
                             """.format(url=original_url, num=new_num)
                         cursor.execute(insert_row)
                         number_of_rows += 1
-
                     encoded_string = new_num
+                    short_url = '/'.join([host, encoded_string])
                     if method == 'GET':
-                        return jsonify(**{'short_url': host + encoded_string,
+                        return jsonify(**{'short_url': short_url,
                                           'code': 'SUCCESS',
                                           'original_url': original_url})
                     else:
                         return render_template(
-                            'home.html', short_url=host + encoded_string,
+                            'home.html', short_url=short_url,
                             number_of_rows=number_of_rows)
 
             return render_template('home.html', number_of_rows=number_of_rows)
@@ -159,8 +161,11 @@ def redirect_short_url(short_url):
         error=True)
 
 
-if __name__ == '__main__':
+def main():
     # This code checks whether database table is created or not
     table_check()
-#    app.run(debug=True)
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
+
+
+if __name__ == '__main__':
+    main()

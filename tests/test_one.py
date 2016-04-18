@@ -77,6 +77,13 @@ class FlaskrTestCase(unittest.TestCase):
         self.assertIn('Your Version is', result.output,
                       'Version is not being printed as expected')
 
+    def test_005_fevicon(self):
+        '''Retrieve favicon.ico'''
+        rv = self.app.get('/favicon.ico')
+        self.assertTrue(rv.status_code == 200,
+                        'favicon was not retrieved properly')
+        rv.close()
+
 
 if __name__ == '__main__':
     import sys

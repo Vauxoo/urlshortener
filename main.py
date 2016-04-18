@@ -17,10 +17,10 @@ from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
 
-__version__ = '1.1.3'
+__version__ = '1.1.4'
 db_path = 'var/urls.db'
-
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
+protocol = os.environ.get("PROTOCOL", 'http://')
 
 
 BASE = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -132,17 +132,20 @@ def home():
                     encoded_string = new_num
                     short_url = '/'.join([host, encoded_string])
                     if method == 'GET':
-                        return jsonify(**{'short_url': short_url,
-                                          'code': 'SUCCESS',
-                                          'original_url': original_url,
-                                          'version': __version__})
+                        return jsonify({'short_url': short_url,
+                                        'code': 'SUCCESS',
+                                        'original_url': original_url,
+                                        'version': __version__})
                     else:
                         return render_template(
                             'home.html', short_url=short_url,
+                            protocol=protocol,
                             number_of_rows=number_of_rows,
                             version=__version__)
 
-            return render_template('home.html', number_of_rows=number_of_rows,
+            return render_template('home.html',
+                                   protocol=protocol,
+                                   number_of_rows=number_of_rows,
                                    version=__version__)
         except Exception as error:
             if method == 'GET':

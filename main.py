@@ -16,7 +16,7 @@ from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 db_path = 'var/urls.db'
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')

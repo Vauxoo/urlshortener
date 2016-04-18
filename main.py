@@ -16,7 +16,7 @@ from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 db_path = 'var/urls.db'
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
@@ -176,9 +176,8 @@ def redirect_short_url(short_url):
 @click.command()
 def main(debug, version):
     if version:
-        click.echo(__version__)
-        exit()
-    # This code checks whether database table is created or not
+        import sys
+        sys.exit('Your Version is: %s' % __version__)
     table_check()
     app.run(host='0.0.0.0', debug=debug)
 

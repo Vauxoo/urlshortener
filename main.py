@@ -176,9 +176,8 @@ def redirect_short_url(short_url):
 @click.command()
 def main(debug, version):
     if version:
-        click.echo(__version__)
-        exit()
-    # This code checks whether database table is created or not
+        import sys
+        sys.exit('Your Version is: %s' % __version__)
     table_check()
     app.run(host='0.0.0.0', debug=debug)
 

@@ -11,12 +11,13 @@ import string
 import os
 import click
 from flask import Flask, request, render_template, redirect, jsonify
+from flask import send_from_directory
 from flask.ext.cors import CORS, cross_origin
 from sqlite3 import OperationalError
 from urllib.parse import urlparse
 
 
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 db_path = 'var/urls.db'
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
@@ -82,6 +83,13 @@ def table_check():
             cursor.execute(create_table)
         except OperationalError:
             pass
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/', methods=['GET', 'POST'])

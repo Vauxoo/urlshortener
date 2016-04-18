@@ -65,7 +65,9 @@
                      </form>
                {% if short_url %}
                   <div class='alert alert-success'>
-                     <a class="alert-link" href="{{short_url}}"  target="_blank"> {{short_url}}</a>
+                      <a class="alert-link" href="{{protocol}}{{short_url}}"  target="_blank"> 
+                          {{protocol}}{{short_url}}
+                     </a>
                   </div>
                {% endif %}
                {% if error %}

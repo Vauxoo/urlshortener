@@ -44,7 +44,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post('/', data=dict(
                 url='http://google.com',
              ), follow_redirects=True)
-        self.assertIn(b'localhost:5000/0', rv.data,
+        self.assertIn(b'http://localhost:5000/0', rv.data,
                       'Link Was not shortened')
 
     def test_003_retrieving(self):

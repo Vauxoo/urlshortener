@@ -17,7 +17,7 @@ from urllib.parse import urlparse
 
 
 __version__ = '1.1.0'
-
+db_path = 'var/urls.db'
 
 host = os.environ.get("SHORTENER_DOMAIN", 'localhost:5000')
 
@@ -76,7 +76,7 @@ def table_check():
         URL  TEXT  NOT NULL UNIQUE
         );
         """
-    with sqlite3.connect('var/urls.db') as conn:
+    with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
         try:
             cursor.execute(create_table)
@@ -88,7 +88,7 @@ def table_check():
 @cross_origin(origin='localhost', headers=['Content-Type', 'Authorization'])
 def home():
     method = request.method
-    with sqlite3.connect('var/urls.db') as conn:
+    with sqlite3.connect(db_path) as conn:
         try:
             cursor = conn.cursor()
             rows_query = """
@@ -152,7 +152,7 @@ def home():
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
     decoded_string = short_url
-    with sqlite3.connect('var/urls.db') as conn:
+    with sqlite3.connect(db_path) as conn:
         cursor = conn.cursor()
         select_row = """
                 SELECT URL FROM WEB_URL

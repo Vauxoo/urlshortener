@@ -32,6 +32,7 @@ install/win32/meta.py
 /share/
 /src/
 /var/*
+!/var/.gitkeep
 
 # oca gitignore
 # Byte-compiled / optimized / DLL files

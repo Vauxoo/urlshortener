@@ -8,6 +8,10 @@ To launch the application:
 
 To program on it:
 
-    virtualen -p python3 env
+    virtualenv -p python3 env
     . env/bin/activate
     pip install -r requirements.txt
+
+Running (no docker):
+    
+    

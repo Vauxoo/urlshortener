@@ -22,3 +22,10 @@ A URL shortening Flask micro website similar to bit.ly
 ## Running test suite:
 
     tox
+
+## Supoort for postgresql.
+
+If the environment variable USE_POSTGRESQL is setted you will be able to save all in postresql
+this docker has the ability of provide some standard configurations following
+the base [Postgresql image on docker](https://docs.docker.com/engine/examples/postgresql_service/)
+documentation, nothing special is implemented until now.
